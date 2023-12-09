@@ -520,18 +520,38 @@ void sendKeyPress(bool down, const String &key)
   SLIPSerial.endPacket();
 }
 
-void checkButtons() {
+void checkButtons()
+{
+  // OSC configuration
   const int keyCount = 2;
   const int keyPins[2] = {goButton, backButton};
-  const String keyNames[2] = {"NEXT", "LAST"};
+  const String keyNames[2] = {
+    "go_0", "stop"
+  };
 
   static int keyStates[2] = {HIGH, HIGH};
 
-  for (int keyNum = 0; keyNum < keyCount; ++keyNum) {
-    int currentState = digitalRead(keyPins[keyNum]);
-    if (currentState != keyStates[keyNum]) {
-      sendKeyPress(currentState == HIGH, keyNames[keyNum]);
-      keyStates[keyNum] = currentState;
+  // Eos and Cobalt buttons are the same
+  // ColorSource is different
+  int firstKey = 0;
+
+  // Loop over the buttons
+  for (int keyNum = 0; keyNum < keyCount; ++keyNum)
+  {
+    // Has the button state changed
+    if (digitalRead(keyPins[keyNum]) != keyStates[keyNum])
+    {
+      // Notify console of this key press
+      if (keyStates[keyNum] == LOW)
+      {
+        sendKeyPress(false, keyNames[firstKey + keyNum]);
+        keyStates[keyNum] = HIGH;
+      }
+      else
+      {
+        sendKeyPress(true, keyNames[firstKey + keyNum]);
+        keyStates[keyNum] = LOW;
+      }
     }
   }
 }
