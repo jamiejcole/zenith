@@ -4,15 +4,20 @@
 #include "Adafruit_MCP23017.h"
 #include "Rotary.h"
 #include "RotaryEncOverMCP.h"
+#include <string.h>
 
 #define NUM_BUTTONS 5
 #define MCP_PIN_MX1_SHIFT 13
 #define MCP_PIN_MX2_GO 14
 #define MCP_PIN_MX3_STOP 15
-#define MCP_PIN_PB1_SW 10
-#define MCP_PIN_PB1_LED 9
-#define MCP_PIN_PB2_SW 12
-#define MCP_PIN_PB2_LED 11
+#define MCP_PIN_PB1_SW 12
+#define MCP_PIN_PB1_LED 11
+#define MCP_PIN_PB2_SW 10
+#define MCP_PIN_PB2_LED 9
+
+#define OSC_BUF_MAX_SIZE 512
+#define PING_AFTER_IDLE_INTERVAL 2500
+#define TIMEOUT_AFTER_IDLE_INTERVAL 5000
 
 const uint8_t BUTTON_PINS[NUM_BUTTONS] = {
   MCP_PIN_MX1_SHIFT,
@@ -21,6 +26,17 @@ const uint8_t BUTTON_PINS[NUM_BUTTONS] = {
   MCP_PIN_PB1_SW,
   MCP_PIN_PB2_SW
 };
+
+const char* encoderFunctions[][4] = {
+  {"pan", "tilt", "zoom", "intensity"}, // page 1
+  {"red", "green", "blue", "white"} // page 2
+};
+
+int currentPage = 0;
+
+
+const String HANDSHAKE_QUERY = "ETCOSC?";
+const String HANDSHAKE_REPLY "OK";
 
 BounceMcp * buttons = new BounceMcp[NUM_BUTTONS];
 
@@ -49,11 +65,37 @@ void RotaryEncoderChanged(bool clockwise, int id) {
           + (clockwise ? String("clockwise") : String("counter-clock-wise")));
 }
 
+void startupBlink();
+void waitingForConnectionBlink();
+
+void startupBlink() {
+  for (int i = 0; i < 5; i++) {
+    mcp.digitalWrite(MCP_PIN_PB1_LED, HIGH);
+    mcp.digitalWrite(MCP_PIN_PB2_LED, HIGH);
+    delay(100);
+    mcp.digitalWrite(MCP_PIN_PB1_LED, LOW);
+    mcp.digitalWrite(MCP_PIN_PB2_LED, LOW);
+    delay(100);
+  }
+}
+
+void waitingForConnectionBlink() {
+  mcp.digitalWrite(MCP_PIN_PB1_LED, HIGH);
+  delay(400);
+  mcp.digitalWrite(MCP_PIN_PB1_LED, LOW);
+  delay(200);
+  mcp.digitalWrite(MCP_PIN_PB2_LED, HIGH);
+  delay(400);
+  mcp.digitalWrite(MCP_PIN_PB2_LED, LOW);
+  delay(200);
+}
+
 void setup(){
-  delay(1000);
+  delay(500); // Give time for bootup to finish
+  
   Serial.begin(115200);
   Serial.flush();
-  Serial.println("MCP23007 Polling Test");
+  Serial.println("--- Zenith MK2 ---");
 
   Wire.begin();
   Wire.setClock(400000);
@@ -74,14 +116,11 @@ void setup(){
 
   mcp.pinMode(MCP_PIN_PB1_LED, OUTPUT);
   mcp.pinMode(MCP_PIN_PB2_LED, OUTPUT);
+
+  startupBlink();
 }
 
 void pollAll() {
-  //We could also call ".poll()" on each encoder,
-  //however that will cause an I2C transfer
-  //for every encoder.
-  //It's faster to only go through each MCP object,
-  //read it, and then feed it into the encoder as input.
   for(int j = 0; j < numMCPs; j++) {
       uint16_t gpioAB = allMCPs[j]->readGPIOAB();
       for (int i=0; i < numEncoders; i++) {
@@ -91,6 +130,10 @@ void pollAll() {
               rotaryEncoders[i].feedInput(gpioAB);
       }
   }
+}
+
+void sendEncoderMovement(int page, int encoder, float ticks) {
+  // we want to send a string e.g. /eos/wheel/coarse/pan
 }
 
 void loop() {
