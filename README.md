@@ -30,6 +30,23 @@ This was mitigated by exiting EOS and using a dodgy workaround to get to control
 – Whilst I’m guessing that you’re using the same USB cable at the desk as you did to upload the firmware to the arduino, just in case you are not, try a different USB cable. I have had some funny issues which turned out to be an intermittently faulty cable
 Hope that helps!
 
+>> Element 2 CH340 Driver install
+> Any update on this? I have a win7 element 2 console and my arduino uno clone is not being recognised at all in diagnostics page. It's using the CH340 chipset, really struggling to get this to work. Is there any way i can install the drivers onto the console?
+
+Update on this, was able to install the correct drivers by:
+- loading into the console ECU,
+- spamming shift to open the sticky keys menu
+- clicking the hyperlink on the prompt to open control panel
+- open device manager from control panel
+- find the COM port for the Arduino 
+- insert usb with extracted .zip folder for windows 7 CH340 drivers, downloaded from [this page](https://www.wch-ic.com/downloads/CH341SER_ZIP.html)
+- click update drivers 
+- select update from local file
+- find extracted driver folder on USB
+- install drivers
+- exit out of all windows and launch EOS primary
+- COM4 port is now recognised and can talk to Arduino via OSC over USB
+
 ## Wiring
 Here was my 'circuit diagram' for the build.
 ![Circuit Diagram](https://raw.githubusercontent.com/jamiejcole/zenith/main/Images/Circuit%20Diagram.jpg)
