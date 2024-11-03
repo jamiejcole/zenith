@@ -42,7 +42,7 @@ const uint8_t BUTTON_PINS[NUM_BUTTONS] = {
 };
 
 const char* encoderFunctions[][4] = {
-  {"pan", "tilt", "zoom", "intens"}, // page 1
+  {"pan", "tilt", "zoom", "intensity"}, // page 1 - pan, tilt, zoom, intensity
   {"red", "green", "blue", "white"} // page 2
 };
 
@@ -73,7 +73,7 @@ void readyBlink();
 void parseOscMessage(String &msg);
 void issueEosSubscribes();
 void activatePage(int page);
-void sendKeyPress(const String &key);
+void sendKeyPress(const String &key, int shiftMod = -1);
 
 RotaryEncOverMCP rotaryEncoders[] = {
     RotaryEncOverMCP(&mcp, 6, 7, &RotaryEncoderChanged, 1),
@@ -141,12 +141,17 @@ void sendOscMessage(const String &address, float value) {
 void sendEncoderMovement(int page, int encoder, float ticks) {
   // we want to send a string e.g. /eos/wheel/coarse/pan
   float sentTicks = ticks;
-  String wheelMsg("/eos/wheel");
-  wheelMsg.concat("/coarse/");
-  wheelMsg.concat(encoderFunctions[page][encoder]);
-  if (page == 0 && encoder == 3) // double ticks for intensity
-    sentTicks = 5;
-  sendOscMessage(wheelMsg, sentTicks);
+  if (page == 0 && encoder == 3) { 
+    sentTicks *= 2; // double ticks for intensity
+    String wheelMsg("/eos/wheel/1/level");
+    sendOscMessage(wheelMsg, sentTicks);
+  }
+  else {
+    String wheelMsg("/eos/wheel");
+    wheelMsg.concat("/coarse/");
+    wheelMsg.concat(encoderFunctions[page][encoder]);
+    sendOscMessage(wheelMsg, sentTicks);
+  }
 }
 
 void issueEosSubscribes() {
@@ -188,12 +193,20 @@ void activatePage(int page) {
   }
 }
 
-void sendKeyPress(const String &key) {
+void sendKeyPress(const String &key, int shiftMod) {
   String msg = "/eos/key/" + key;
-  OSCMessage keyMsg(msg.c_str());
-  SLIPSerial.beginPacket();
-  keyMsg.send(SLIPSerial);
-  SLIPSerial.endPacket();
+  if (shiftMod == 1) {
+    sendOscMessage(msg, 1.0);
+  }
+  else if (shiftMod == 0) {
+    sendOscMessage(msg, 0.0);
+  }
+  else {
+    OSCMessage keyMsg(msg.c_str());
+    SLIPSerial.beginPacket();
+    keyMsg.send(SLIPSerial);
+    SLIPSerial.endPacket();
+  }
 }
 
 void setup(){
@@ -296,22 +309,19 @@ void loop() {
   }
 
   for (int i = 0; i < NUM_BUTTONS; i++) {
-    if (i > 0) {
-      if (buttons[i].fell()) {
-        if (!buttons[0].read())
-          Serial.print("SHIFT + ");
-        Serial.print("Button ");
-        Serial.print(i+1);
-        Serial.println(" was pushed.");
-        if (i == 1)
-          sendKeyPress("go_0");
-        if (i == 2)
-          sendKeyPress("stop");
-        if (i == 3) // PB1
-          activatePage(0);
-        if (i == 4) // PB2
-          activatePage(1);
-      }
+    if (i == 0 && buttons[i].rose())
+      sendKeyPress("shift", 0); //0
+    if (i == 0 && buttons[i].fell())
+      sendKeyPress("shift", 1); //1
+    if (buttons[i].fell()) {
+      if (i == 1)
+        sendKeyPress("go_0");
+      if (i == 2)
+        sendKeyPress("stop");
+      if (i == 3) // PB1
+        activatePage(0);
+      if (i == 4) // PB2
+        activatePage(1);
     }
   }
 }
