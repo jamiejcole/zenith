@@ -6002,50 +6002,6 @@
 			)
 		)
 	)
-	(global_label "GND"
-		(shape input)
-		(at 67.31 223.52 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "6bf41909-01f0-44a4-9db6-5a2904852e5f")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 74.1657 223.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "GND"
-		(shape input)
-		(at 67.31 261.62 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "6dbffd23-5558-489f-b99f-3788d31d87eb")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 74.1657 261.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "MCPB2"
 		(shape input)
 		(at 63.5 152.4 0)
@@ -6662,28 +6618,6 @@
 			)
 		)
 	)
-	(global_label "GND"
-		(shape input)
-		(at 36.83 261.62 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "ca7a1f72-6100-4000-9b5b-662697526923")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 29.9743 261.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "Column 3"
 		(shape input)
 		(at 67.31 238.76 0)
@@ -6724,28 +6658,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "GND"
-		(shape input)
-		(at 36.83 248.92 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "cdb0d609-0b64-407a-9f01-96380b695281")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 29.9743 248.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 				(hide yes)
 			)
 		)
@@ -6895,28 +6807,6 @@
 		(uuid "df9422e8-0671-4cb2-a874-b4177e5961ad")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 356.87 58.9427 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "GND"
-		(shape input)
-		(at 67.31 248.92 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "dfee0975-8a3d-4b25-8808-fa8c1d8c099a")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 74.1657 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
