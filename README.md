@@ -50,6 +50,3 @@ Update on this, was able to install the correct drivers by:
 ## Wiring
 Here was my 'circuit diagram' for the build.
 ![Circuit Diagram](https://raw.githubusercontent.com/jamiejcole/zenith/main/Images/Circuit%20Diagram.jpg)
-
-And a mid-assembly pic.
-![Assembly process](https://raw.githubusercontent.com/jamiejcole/zenith/main/Images/assembly.JPG)
